@@ -14,8 +14,6 @@ def generate_layout(graphs):
                 )
             ]) for name in graphs],
             className='history_graphs'),
-
-        Div(id="history_graphs-display-value"),
     ])
 
 
@@ -31,6 +29,7 @@ def update_figures(graphs, histories, models):
                 for history, model in zip(histories, models)
             ],
             layout=dict(
+                showlegend=True,
                 title={
                     "text": name,
                     "x": 0.5,
