@@ -29,10 +29,22 @@ work_with_db.py
 # history = db.load_history(20)
 
 models = [
-    (0, "Test Dummy Model", "EFN")
+    (0, "Test Dummy Model #1", "EFN"),
+    (1, "Test Dummy Model #2", "EFN"),
 ]
 
 reports = [
+    (0, {
+        "accuracy": "0.1979166716337204",
+        "val_accuracy": "0.0",
+        "loss": "3.4406051635742188",
+        "val_loss": "4.19291353225708",
+        "f1": "0.0",
+        "val_f1": "0.0",
+        "test_accuracy": "0.0",
+        "test_loss": "4.24012565612793",
+        "test_f1": "0.0"
+    }),
     (0, {
         "accuracy": "0.1979166716337204",
         "val_accuracy": "0.0",
@@ -63,7 +75,16 @@ histories = [
         "val_accuracy": ["0.0", "0.0"],
         "val_f1": ["0.0", "0.0"],
         "lr": ["0.001", "0.001"]
-    })
+    }),
+    (1, {
+        "loss": ["2.946352958679199", "1.4406051635742188"],
+        "accuracy": ["0.0572916679084301", "0.1979166716337204"],
+        "f1": ["0.0", "0.0"],
+        "val_loss": ["4.087198734283447", "4.19291353225708"],
+        "val_accuracy": ["0.0", "0.0"],
+        "val_f1": ["0.0", "0.0"],
+        "lr": ["0.001", "0.001"]
+    }),
 ]
 
 histories = [
@@ -74,7 +95,14 @@ histories = [
     for id, history in histories
 ]
 
-graphs = ("loss", "accuracy", "f1", "val_loss", "val_f1", "lr")
+graphs = (
+    ("loss", [0, 1.1]),
+    ("accuracy", [0, 1.1]),
+    ("f1", [-0.1, 3]),
+    ("val_loss", [-0.1, 3]),
+    ("val_f1", [-0.1, 1.1]),
+    ("lr", [-0.1, 1.1])
+)
 
 
 def get_dropdown_list(models):
@@ -102,7 +130,7 @@ app.layout = html.Div([
 
 
 @app.callback(
-    [Output(graph, 'figure') for graph in graphs],
+    [Output(graph, 'figure') for graph, _ in graphs],
     [Input('models-dropdown', 'value')])
 def display_page(value):
     return learning_history.update_figures(

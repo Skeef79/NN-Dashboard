@@ -12,12 +12,16 @@ def generate_layout(graphs):
                 Graph(
                     id=name,
                 )
-            ]) for name in graphs],
+            ]) for name, _ in graphs],
             className='history_graphs'),
     ])
 
 
 def update_figures(graphs, histories, models):
+    """Returns new figures for current dropdown state;
+    graphs is [(graph_name, graph_range)],
+    histories is [{graph_name: [values]}],
+    models is [(id, name, type)]"""
     return [
         Figure(
             data=[
@@ -41,12 +45,12 @@ def update_figures(graphs, histories, models):
                 },
                 xaxis_title='Epoch',
                 yaxis_title=name,
+                yaxis_range=range_,
                 font=dict(
                     family="Courier New, monospace",
                     size=18
                 ),
             )
         )
-
-        for name in graphs
+        for name, range_ in graphs
     ]
