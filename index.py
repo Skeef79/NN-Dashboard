@@ -10,6 +10,16 @@ from app import app
 import dash
 
 
+'''
+Это типо прототип , но уже вроде нот бед
+короче идея вынести всю работу с бд в отдельный питон файл
+work_with_db.py
+там написать функции подгрузки моделей
+подгрузки config,report,cm,history по id
+
+'''
+
+
 def load_models():
     with closing(psycopg2.connect(dbname='plant_pathology',
                                   user='postgres',
@@ -32,22 +42,24 @@ print(models)
 
 
 app.layout = html.Div([
+    #dcc.Location(id="url", refresh=False),
     dcc.Dropdown(
         id='models-dropdown',
         options=get_dropdown_list(models),
+        clearable=False,
+        value=models[0][0]
     ),
-    html.Div(id='dd-output-container')
+    html.Div(id='page-content')
 ])
 
 
 @app.callback(
-    dash.dependencies.Output('dd-output-container', 'children'),
-    [dash.dependencies.Input('models-dropdown', 'value')])
-
-def update_output(value):
-    return 'You have selected "{}"'.format(value)
+    dash.dependencies.Output('page-content', 'children'),
+    [Input('models-dropdown', 'value')])
+def display_page(value):
+    return index2.gen_layout(value)
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
 
