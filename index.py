@@ -8,6 +8,9 @@ from contextlib import closing
 import json
 from app import app
 import dash
+from apps import model
+import work_with_db as db
+
 
 
 '''
@@ -19,26 +22,17 @@ work_with_db.py
 
 '''
 
-
-def load_models():
-    with closing(psycopg2.connect(dbname='plant_pathology',
-                                  user='postgres',
-                                  password='postgres',
-                                  host='172.16.0.11',
-                                  port='5432')) as conn:
-        with conn.cursor() as cursor:
-            cursor.execute('SELECT * FROM models')
-            return cursor.fetchall()
+models = db.load_models()
+config = db.load_config(20)
+report = db.load_report(20)
+cm = db.load_cm(20)
+history = db.load_history(20)
 
 
 def get_dropdown_list(models):
     return [
         {'label': str(model[1]),
          'value': str(model[0])} for model in models]
-
-
-models = load_models()
-print(models)
 
 
 app.layout = html.Div([
@@ -57,7 +51,7 @@ app.layout = html.Div([
     dash.dependencies.Output('page-content', 'children'),
     [Input('models-dropdown', 'value')])
 def display_page(value):
-    return index2.gen_layout(value)
+    return model.gen_layout(value)
 
 
 if __name__ == '__main__':
