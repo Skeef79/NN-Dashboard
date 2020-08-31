@@ -8,7 +8,7 @@ from contextlib import closing
 import json
 from app import app
 import dash
-from apps import model, history
+from apps import model, learning_history
 import work_with_db as db
 
 
@@ -28,47 +28,87 @@ work_with_db.py
 # cm = db.load_cm(20)
 # history = db.load_history(20)
 
-report = {
-    "accuracy": "0.1979166716337204",
-    "val_accuracy": "0.0",
-    "loss": "3.4406051635742188",
-    "val_loss": "4.19291353225708",
-    "f1": "0.0",
-    "val_f1": "0.0",
-    "test_accuracy": "0.0",
-    "test_loss": "4.24012565612793",
-    "test_f1": "0.0"
-}
+models = [
+    (0, "Test Dummy Model", "EFN")
+]
 
+reports = [
+    (0, {
+        "accuracy": "0.1979166716337204",
+        "val_accuracy": "0.0",
+        "loss": "3.4406051635742188",
+        "val_loss": "4.19291353225708",
+        "f1": "0.0",
+        "val_f1": "0.0",
+        "test_accuracy": "0.0",
+        "test_loss": "4.24012565612793",
+        "test_f1": "0.0"
+    })
+]
 
+reports = [
+    (id, {
+        name: float(value)
+        for name, value in report.items()
+    })
+    for id, report in reports
+]
+
+histories = [
+    (0, {
+        "loss": ["3.946352958679199", "3.4406051635742188"],
+        "accuracy": ["0.0572916679084301", "0.1979166716337204"],
+        "f1": ["0.0", "0.0"],
+        "val_loss": ["4.087198734283447", "4.19291353225708"],
+        "val_accuracy": ["0.0", "0.0"],
+        "val_f1": ["0.0", "0.0"],
+        "lr": ["0.001", "0.001"]
+    })
+]
+
+histories = [
+    (id, {
+        name: [float(value) for value in values]
+        for name, values in history.items()
+    })
+    for id, history in histories
+]
+
+graphs = ("loss", "accuracy", "f1", "val_loss", "val_f1", "lr")
 
 
 def get_dropdown_list(models):
     return [
         {'label': str(model[1]),
-         'value': str(model[0])} for model in models
+         'value': model[0]} for model in models
     ]
 
 
-# app.layout = html.Div([
-#     #dcc.Location(id="url", refresh=False),
-#     dcc.Dropdown(
-#         id='models-dropdown',
-#         options=get_dropdown_list(models),
-#         clearable=False,
-#         value=models[0][0]
-#     ),
-#     html.Div(id='page-content')
-# ])
-#
-#
-# @app.callback(
-#     dash.dependencies.Output('page-content', 'children'),
-#     [Input('models-dropdown', 'value')])
-# def display_page(value):
-#     return model.gen_layout(value)
+app.layout = html.Div([
+    #dcc.Location(id="url", refresh=False),
+    dcc.Dropdown(
+        id='models-dropdown',
+        options=get_dropdown_list(models),
+        clearable=True,
+        multi=True,
+        value=[],
+    ),
+    html.Div(
+        learning_history.generate_layout(graphs),
+        id='page-content',
+    ),
+    html.Div(id='dummy')
+])
 
-app.layout = history.layout
+
+@app.callback(
+    [Output(graph, 'figure') for graph in graphs],
+    [Input('models-dropdown', 'value')])
+def display_page(value):
+    return learning_history.update_figures(
+        graphs,
+        [h[1] for h in histories if h[0] in value],
+        [m[1] for m in models if m[0] in value])
 
 
 if __name__ == '__main__':
