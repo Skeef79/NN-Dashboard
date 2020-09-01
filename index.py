@@ -8,7 +8,7 @@ from contextlib import closing
 import json
 from app import app
 import dash
-from apps import model
+from apps import model, learning_history, report_table
 import work_with_db as db
 
 
@@ -22,36 +22,13 @@ work_with_db.py
 
 '''
 
-models = db.load_models()
-config = db.load_config(20)
-report = db.load_report(20)
-cm = db.load_cm(20)
-history = db.load_history(20)
+# models = db.load_models()
+# config = db.load_config(20)
+# report = db.load_report(20)
+# cm = db.load_cm(20)
+# history = db.load_history(20)
 
-
-def get_dropdown_list(models):
-    return [
-        {'label': str(model[1]),
-         'value': str(model[0])} for model in models]
-
-
-app.layout = html.Div([
-    #dcc.Location(id="url", refresh=False),
-    dcc.Dropdown(
-        id='models-dropdown',
-        options=get_dropdown_list(models),
-        clearable=False,
-        value=models[0][0]
-    ),
-    html.Div(id='page-content')
-])
-
-
-@app.callback(
-    dash.dependencies.Output('page-content', 'children'),
-    [Input('models-dropdown', 'value')])
-def display_page(value):
-    return model.gen_layout(value)
+app.layout = model.layout
 
 
 if __name__ == '__main__':
