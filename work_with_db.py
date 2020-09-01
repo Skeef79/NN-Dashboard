@@ -6,8 +6,8 @@ from contextlib import closing
 
 conn_params = {
     'dbname': 'plant_pathology',
-    'user': 'loh',
-    'password': 'pidr',
+    'user': 'postgres',
+    'password': 'postgres',
     'host': '172.16.0.11',
     'port': '5432'
 }

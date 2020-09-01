@@ -39,17 +39,14 @@ reports = []
 histories = []
 
 
-def update_models(new_models,new_reports,new_histories):
+def update_models(new_models, new_reports, new_histories):
     global models, reports, histories
     models.clear()
     reports.clear()
     histories.clear()
-    for new_model in new_models:
-        models.append(new_model)
-    for new_report in new_reports:
-        reports.append(new_report)
-    for new_history in new_histories:
-        histories.append(new_history)
+    models.extend(new_models)
+    reports.extend(new_reports)
+    histories.extend(new_histories)
 
 
 def get_layout():

@@ -8,11 +8,11 @@ from contextlib import closing
 import json
 from app import app
 import dash
-from apps import model, learning_history, report_table
+from apps import model, confusion_matrix
 import work_with_db as db
 
 
-def get_db_params():
+def get_learning_params():
     return {
         'new_models': db.load_models(),
         'new_reports': [
@@ -31,8 +31,51 @@ def get_db_params():
     }
 
 
-model.update_models(**get_db_params())
-app.layout = model.get_layout()
+def get_cm_params():
+    return {
+        'new_models': db.load_models(),
+        'new_cms': db.load_cms(),
+        'new_configs': db.load_configs()
+    }
+
+
+model.update_models(**get_learning_params())
+confusion_matrix.update_models(**get_cm_params())
+
+app.layout = html.Div([
+    dcc.Location(id="url", refresh=False),
+    html.Div(
+        [
+            dcc.Link(
+                "История обучения",
+                href="/apps/model",
+                className="tab first",
+            ),
+            dcc.Link(
+                "Confusion matrix",
+                href="/apps/confusion_matrix",
+                className="tab"
+            ),
+        ],
+        className="links",
+    ),
+    html.Div(id="page-content"),
+])
+
+
+@app.callback(Output('page-content', 'children'),
+              [Input('url', 'pathname')])
+def display_page(pathname):
+    if pathname == 'apps/model':
+        model.update_models(**get_learning_params())
+        return model.get_layout()
+    elif pathname == '/apps/confusion_matrix':
+        confusion_matrix.update_models(**get_cm_params())
+        return confusion_matrix.get_layout()
+    else:
+        model.update_models(**get_learning_params())
+        return model.get_layout()
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
