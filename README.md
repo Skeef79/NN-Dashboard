@@ -5,4 +5,3 @@ It shows:
 - History graphs
 - Metrics
 - Confusion matrix
-- Summary of top 5 models 
