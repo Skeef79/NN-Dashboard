@@ -8,7 +8,7 @@ from contextlib import closing
 import json
 from app import app
 import dash
-from apps import model, learning_history
+from apps import model, learning_history, report_table
 import work_with_db as db
 
 
@@ -45,7 +45,7 @@ reports = [
         "test_loss": "4.24012565612793",
         "test_f1": "0.0"
     }),
-    (0, {
+    (1, {
         "accuracy": "0.1979166716337204",
         "val_accuracy": "0.0",
         "loss": "3.4406051635742188",
@@ -113,7 +113,6 @@ def get_dropdown_list(models):
 
 
 app.layout = html.Div([
-    #dcc.Location(id="url", refresh=False),
     dcc.Dropdown(
         id='models-dropdown',
         options=get_dropdown_list(models),
@@ -122,21 +121,28 @@ app.layout = html.Div([
         value=[],
     ),
     html.Div(
+        id='report'
+    ),
+    html.Div(
         learning_history.generate_layout(graphs),
-        id='page-content',
     ),
     html.Div(id='dummy')
 ])
 
 
 @app.callback(
-    [Output(graph, 'figure') for graph, _ in graphs],
+    [Output('report', 'children')] + [Output(graph, 'figure') for graph, _ in graphs],
     [Input('models-dropdown', 'value')])
 def display_page(value):
-    return learning_history.update_figures(
-        graphs,
-        [h[1] for h in histories if h[0] in value],
-        [m[1] for m in models if m[0] in value])
+    return (
+        report_table.generate_layout(
+            [report for report in reports if report[0] in value],
+            models
+        ),
+        *learning_history.update_figures(
+            graphs,
+            [h[1] for h in histories if h[0] in value],
+            [m[1] for m in models if m[0] in value]))
 
 
 if __name__ == '__main__':
