@@ -5,8 +5,8 @@ from plotly.graph_objs import Figure, Scatter
 
 def generate_layout(graphs):
     return Div([
-        H1("История обучения"),
         Div(className="metrics_bottom_border"),
+        H2("История обучения"),
         Div(
             children=[Div([
                 Graph(

@@ -104,6 +104,18 @@ graphs = (
     ("lr", [-0.1, 1.1])
 )
 
+table_headers = {
+    "accuracy": "Accuracy",
+    "val_accuracy": "Validation accuracy",
+    "loss": "Train loss",
+    "val_loss": "Validation loss",
+    "f1": "Train F1",
+    "val_f1": "Validation F1",
+    "test_accuracy": "Test accuracy",
+    "test_loss": "Test loss",
+    "test_f1": "Test F1"
+}
+
 
 def get_dropdown_list(models):
     return [
@@ -136,6 +148,7 @@ app.layout = html.Div([
 def display_page(value):
     return (
         report_table.generate_layout(
+            table_headers,
             [report for report in reports if report[0] in value],
             models
         ),
