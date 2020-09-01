@@ -5,80 +5,13 @@ from dash_html_components import Div
 from app import app
 from apps import learning_history, report_table
 
-models = [
-    (0, "Test Dummy Model #1", "EFN"),
-    (1, "Test Dummy Model #2", "EFN"),
-]
-
-reports = [
-    (0, {
-        "accuracy": "0.1979166716337204",
-        "val_accuracy": "0.0",
-        "loss": "3.4406051635742188",
-        "val_loss": "4.19291353225708",
-        "f1": "0.0",
-        "val_f1": "0.0",
-        "test_accuracy": "0.0",
-        "test_loss": "4.24012565612793",
-        "test_f1": "0.0"
-    }),
-    (1, {
-        "accuracy": "0.1979166716337204",
-        "val_accuracy": "0.0",
-        "loss": "3.4406051635742188",
-        "val_loss": "4.19291353225708",
-        "f1": "0.0",
-        "val_f1": "0.0",
-        "test_accuracy": "0.0",
-        "test_loss": "4.24012565612793",
-        "test_f1": "0.0"
-    })
-]
-
-reports = [
-    (id, {
-        name: float(value)
-        for name, value in report.items()
-    })
-    for id, report in reports
-]
-
-histories = [
-    (0, {
-        "loss": ["3.946352958679199", "3.4406051635742188"],
-        "accuracy": ["0.0572916679084301", "0.1979166716337204"],
-        "f1": ["0.0", "0.0"],
-        "val_loss": ["4.087198734283447", "4.19291353225708"],
-        "val_accuracy": ["0.0", "0.0"],
-        "val_f1": ["0.0", "0.0"],
-        "lr": ["0.001", "0.001"]
-    }),
-    (1, {
-        "loss": ["2.946352958679199", "1.4406051635742188"],
-        "accuracy": ["0.0572916679084301", "0.1979166716337204"],
-        "f1": ["0.0", "0.0"],
-        "val_loss": ["4.087198734283447", "4.19291353225708"],
-        "val_accuracy": ["0.0", "0.0"],
-        "val_f1": ["0.0", "0.0"],
-        "lr": ["0.001", "0.001"]
-    }),
-]
-
-histories = [
-    (id, {
-        name: [float(value) for value in values]
-        for name, values in history.items()
-    })
-    for id, history in histories
-]
-
 graphs = (
-    ("loss", [0, 1.1]),
     ("accuracy", [0, 1.1]),
-    ("f1", [-0.1, 3]),
-    ("val_loss", [-0.1, 3]),
+    ("val_accuracy", [-0.1, 1.1]),
+    ("loss", [0, 8]),
+    ("val_loss", [-0.1, 8]),
+    ("f1", [-0.1, 1.1]),
     ("val_f1", [-0.1, 1.1]),
-    ("lr", [-0.1, 1.1])
 )
 
 table_headers = {
@@ -101,22 +34,41 @@ def get_dropdown_list(models):
     ]
 
 
-layout = Div([
-    Dropdown(
-        id='models-dropdown',
-        options=get_dropdown_list(models),
-        clearable=True,
-        multi=True,
-        value=[],
-    ),
-    Div(
-        id='report'
-    ),
-    Div(
-        learning_history.generate_layout(graphs),
-    ),
-    Div(id='dummy')
-])
+models = []
+reports = []
+histories = []
+
+
+def update_models(new_models,new_reports,new_histories):
+    global models, reports, histories
+    models.clear()
+    reports.clear()
+    histories.clear()
+    for new_model in new_models:
+        models.append(new_model)
+    for new_report in new_reports:
+        reports.append(new_report)
+    for new_history in new_histories:
+        histories.append(new_history)
+
+
+def get_layout():
+    return Div([
+        Dropdown(
+            id='models-dropdown',
+            options=get_dropdown_list(models),
+            clearable=True,
+            multi=True,
+            value=[],
+        ),
+        Div(
+            id='report'
+        ),
+        Div(
+            learning_history.generate_layout(graphs),
+        ),
+        Div(id='dummy')
+    ])
 
 
 @app.callback(

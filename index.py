@@ -12,24 +12,27 @@ from apps import model, learning_history, report_table
 import work_with_db as db
 
 
+def get_db_params():
+    return {
+        'new_models': db.load_models(),
+        'new_reports': [
+                (id, {
+                    name: float(value)
+                    for name, value in report.items()
+                })
+                for id, report in db.load_reports()
+            ],
+        'new_histories': [
+                (id, {
+                    name: [float(value) for value in values]
+                    for name, values in history.items()
+                })
+                for id, history in db.load_histories()]
+    }
 
-'''
-Это типо прототип , но уже вроде нот бед
-короче идея вынести всю работу с бд в отдельный питон файл
-work_with_db.py
-там написать функции подгрузки моделей
-подгрузки config,report,cm,history по id
 
-'''
-
-# models = db.load_models()
-# config = db.load_config(20)
-# report = db.load_report(20)
-# cm = db.load_cm(20)
-# history = db.load_history(20)
-
-app.layout = model.layout
-
+model.update_models(**get_db_params())
+app.layout = model.get_layout()
 
 if __name__ == '__main__':
     app.run_server(debug=True)

@@ -18,7 +18,7 @@ def generate_layout(headers, reports, models):
             )] +
             [Tr(
                 [Td([m[1] for m in models if m[0] == report[0]][0])] +
-                [Td(round(value)) for value in report[1].values()]
+                [Td(round(value,4)) for value in report[1].values()]
             )
              for report in reports]
         )

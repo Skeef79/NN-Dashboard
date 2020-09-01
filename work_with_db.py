@@ -20,29 +20,29 @@ def load_models():
             return cursor.fetchall()
 
 
-def load_config(id):
+def load_configs():
     with closing(psycopg2.connect(**conn_params)) as conn:
         with conn.cursor() as cursor:
-            cursor.execute('SELECT value from config WHERE id = %s', (id,))
+            cursor.execute('SELECT * FROM config')
             return cursor.fetchall()
 
 
-def load_history(id):
+def load_histories():
     with closing(psycopg2.connect(**conn_params)) as conn:
         with conn.cursor() as cursor:
-            cursor.execute('SELECT value from history WHERE id = %s', (id,))
+            cursor.execute('SELECT * FROM history')
             return cursor.fetchall()
 
 
-def load_cm(id):
+def load_cms():
     with closing(psycopg2.connect(**conn_params)) as conn:
         with conn.cursor() as cursor:
-            cursor.execute('SELECT value from confusion_matrix WHERE id = %s', (id,))
+            cursor.execute('SELECT * FROM confusion_matrix')
             return cursor.fetchall()
 
 
-def load_report(id):
+def load_reports():
     with closing(psycopg2.connect(**conn_params)) as conn:
         with conn.cursor() as cursor:
-            cursor.execute('SELECT value from report WHERE id = %s', (id,))
+            cursor.execute('SELECT * FROM report')
             return cursor.fetchall()
