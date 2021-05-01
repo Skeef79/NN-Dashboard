@@ -5,11 +5,11 @@ import json
 from contextlib import closing
 
 conn_params = {
-    'dbname': 'plant_pathology',
-    'user': 'loh',
-    'password': 'pidr',
-    'host': '172.16.0.11',
-    'port': '5432'
+    'dbname': 'example',
+    'user': 'Igor',
+    'password': 'pass',
+    'host': '1.2.3.4',
+    'port': '1234'
 }
 
 
